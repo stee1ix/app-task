@@ -16,7 +16,7 @@ import { FAB, Divider, TouchableRipple } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { MotiView, MotiText, AnimatePresence } from 'moti';
 
-const Login = () => {
+const Login = ({ navigation }) => {
 	const [username, onChangeUsername] = useState(null);
 	const [password, onChangePassword] = useState(null);
 	const [email, onChangeEmail] = useState(null);
@@ -205,7 +205,10 @@ const Login = () => {
 
 						{/* Forgot password button, visible only on login screen */}
 						<View style={styles.forgotTextWrapper}>
-							<TouchableOpacity onPress={() => null}>
+							<TouchableOpacity
+								onPress={() =>
+									navigation.navigate('ForgotPassword')
+								}>
 								<MotiText
 									animate={{ opacity: login ? 1 : 0 }}
 									style={styles.forgotText}>
@@ -215,7 +218,7 @@ const Login = () => {
 						</View>
 
 						{/* Google button */}
-						<MotiView animate={{ translateX: login ? -85 : 0 }}>
+						<MotiView>
 							<TouchableRipple
 								borderless
 								style={styles.googleOption}
