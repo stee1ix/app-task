@@ -19,8 +19,10 @@ import { MotiView, MotiText, AnimatePresence } from 'moti';
 const Login = () => {
 	const [username, onChangeUsername] = useState(null);
 	const [password, onChangePassword] = useState(null);
+	const [email, onChangeEmail] = useState(null);
 	const [login, setLogin] = useState(true);
 
+	// toggles login value
 	async function toggleLogin() {
 		await setLogin(!login);
 	}
@@ -30,9 +32,11 @@ const Login = () => {
 			<ImageBackground
 				source={require('../../assets/loginbg2.png')}
 				style={styles.backgroundImage}>
+				{/* Keyboard will dismiss on pressing anywhere outside the input box */}
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<KeyboardAvoidingView
 						behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+						{/* View Login screen button */}
 						<MotiView animate={{ translateX: login ? 120 : 0 }}>
 							<TouchableRipple
 								borderless
@@ -42,6 +46,7 @@ const Login = () => {
 							</TouchableRipple>
 						</MotiView>
 
+						{/* Title */}
 						<AnimatePresence exitBeforeEnter>
 							{!login ? (
 								<MotiText
@@ -64,9 +69,11 @@ const Login = () => {
 							)}
 						</AnimatePresence>
 
+						{/* Input boxes conatiner holding username, email and password */}
 						<MotiView
 							animate={{ height: !login ? 210 : 140 }}
 							style={styles.inputsHolder}>
+							{/* Username input */}
 							<MotiView
 								animate={{ translateY: login ? 35 : 0 }}
 								style={styles.inputWrapper}>
@@ -82,9 +89,13 @@ const Login = () => {
 									value={username}
 								/>
 							</MotiView>
+
+							{/* Divider */}
 							<MotiView animate={{ translateY: login ? 35 : 0 }}>
 								<Divider />
 							</MotiView>
+
+							{/* Email input */}
 							<MotiView
 								animate={{
 									translateX: login
@@ -100,14 +111,18 @@ const Login = () => {
 								<TextInput
 									style={styles.input}
 									placeholder="Email"
-									onChangeText={onChangePassword}
-									value={password}
+									onChangeText={onChangeEmail}
+									value={email}
 									textContentType="emailAddress"
 								/>
 							</MotiView>
+
+							{/* Drawer */}
 							<MotiView animate={{ translateY: login ? -35 : 0 }}>
 								<Divider />
 							</MotiView>
+
+							{/* Password Input */}
 							<MotiView
 								animate={{ translateY: login ? -35 : 0 }}
 								style={styles.inputWrapper}>
@@ -125,6 +140,7 @@ const Login = () => {
 								/>
 							</MotiView>
 
+							{/* Submit Button */}
 							<FAB
 								style={styles.fab}
 								icon="arrow-right"
@@ -134,6 +150,7 @@ const Login = () => {
 							/>
 						</MotiView>
 
+						{/* Forgot password button, visible only on login screen */}
 						<TouchableOpacity onPress={() => null}>
 							<MotiText
 								animate={{ opacity: login ? 1 : 0 }}
@@ -142,6 +159,7 @@ const Login = () => {
 							</MotiText>
 						</TouchableOpacity>
 
+						{/* Google button */}
 						<MotiView animate={{ translateX: login ? -85 : 0 }}>
 							<TouchableRipple
 								borderless
@@ -153,6 +171,8 @@ const Login = () => {
 								/>
 							</TouchableRipple>
 						</MotiView>
+
+						{/* View Register screen button */}
 						<MotiView animate={{ translateX: !login ? -120 : 0 }}>
 							<TouchableRipple
 								borderless
@@ -203,7 +223,7 @@ const styles = StyleSheet.create({
 		borderTopLeftRadius: 50,
 		width: 130,
 		right: -30,
-		marginTop: 90,
+		marginTop: 30,
 		marginBottom: 20,
 		shadowColor: '#000',
 		shadowOffset: {
