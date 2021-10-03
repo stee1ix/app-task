@@ -6,7 +6,6 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/screens/login.screen';
-import Register from './src/screens/register.screen';
 import HomeTab from './src/navigators/home.tab';
 import { StyleSheet, View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -63,16 +62,10 @@ export default function App() {
 								initialRouteName="LoginScreen"
 								screenOptions={{ headerShown: false }}>
 								{!authenticated ? (
-									<>
-										<Stack.Screen
-											name="LoginScreen"
-											component={Login}
-										/>
-										<Stack.Screen
-											name="RegisterScreen"
-											component={Register}
-										/>
-									</>
+									<Stack.Screen
+										name="LoginScreen"
+										component={Login}
+									/>
 								) : (
 									<Stack.Screen
 										name="HomeTab"
