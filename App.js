@@ -13,76 +13,71 @@ import { Provider as PaperProvider } from 'react-native-paper';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-	const [appIsReady, setAppIsReady] = useState(false);
-	const [authenticated, setAuthenticated] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
-	useEffect(() => {
-		async function prepare() {
-			try {
-				await SplashScreen.preventAutoHideAsync();
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
 
-				await Font.loadAsync({
-					'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
-					'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
-					'Montserrat-Medium': require('./assets/fonts/Montserrat-Medium.ttf'),
-					'Baloo-Regular': require('./assets/fonts/Baloo2-Regular.ttf'),
-					'Baloo-Medium': require('./assets/fonts/Baloo2-Medium.ttf'),
-					'Baloo-SemiBold': require('./assets/fonts/Baloo2-SemiBold.ttf'),
-				});
+        await Font.loadAsync({
+          'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+          'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
+          'Montserrat-Medium': require('./assets/fonts/Montserrat-Medium.ttf'),
+          'Baloo-Regular': require('./assets/fonts/Baloo2-Regular.ttf'),
+          'Baloo-Medium': require('./assets/fonts/Baloo2-Medium.ttf'),
+          'Baloo-SemiBold': require('./assets/fonts/Baloo2-SemiBold.ttf'),
+        });
 
-				// await new Promise(resolve => setTimeout(resolve, 1000));
-			} catch (error) {
-				console.warn(error);
-			} finally {
-				setAppIsReady(true);
-			}
-		}
+        // await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
 
-		prepare();
-	}, []);
+    prepare();
+  }, []);
 
-	const onLayoutRootView = useCallback(async () => {
-		if (appIsReady) {
-			await SplashScreen.hideAsync();
-		}
-	}, [appIsReady]);
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
 
-	if (!appIsReady) {
-		return null;
-	}
+  if (!appIsReady) {
+    return null;
+  }
 
-	return (
-		<>
-			<StatusBar style="auto" />
-			<SafeAreaProvider>
-				<View style={styles.container} onLayout={onLayoutRootView}>
-					<NavigationContainer>
-						<PaperProvider>
-							<Stack.Navigator
-								initialRouteName="LoginScreen"
-								screenOptions={{ headerShown: false }}>
-								{!authenticated ? (
-									<Stack.Screen
-										name="LoginScreen"
-										component={Login}
-									/>
-								) : (
-									<Stack.Screen
-										name="HomeTab"
-										component={HomeTab}
-									/>
-								)}
-							</Stack.Navigator>
-						</PaperProvider>
-					</NavigationContainer>
-				</View>
-			</SafeAreaProvider>
-		</>
-	);
+  return (
+    <>
+      <StatusBar style='auto' />
+      <SafeAreaProvider>
+        <View style={styles.container} onLayout={onLayoutRootView}>
+          <NavigationContainer>
+            <PaperProvider>
+              <Stack.Navigator
+                initialRouteName='LoginScreen'
+                screenOptions={{ headerShown: false }}
+              >
+                {!authenticated ? (
+                  <Stack.Screen name='LoginScreen' component={Login} />
+                ) : (
+                  <Stack.Screen name='HomeTab' component={HomeTab} />
+                )}
+              </Stack.Navigator>
+            </PaperProvider>
+          </NavigationContainer>
+        </View>
+      </SafeAreaProvider>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
+  container: {
+    flex: 1,
+  },
 });

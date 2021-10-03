@@ -32,19 +32,34 @@ const Login = () => {
     await setLogin(!login);
   }
 
-  const validateEmail = address => {
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (re.test(address.toLowerCase())) {
-      console.log(
-        `Valid Email Address ${Math.random() * (10 - 2) + 2} email = ${email}`
-      );
-      onChangeEmail(address.toLowerCase());
+  const validatePassword = pass => {
+    if (pass.length >= 6) {
+      onChangePassword(pass);
+      console.log(`Valid Password = ${pass}`);
     } else {
+      //TODO -> Toast(Password Length Must be atleast 6 characters long)
+      //TODO -> https://github.com/scalessec/Toast-Swift
+      console.log('Password length must be 6 characters');
+    }
+  };
+
+  const validateEmail = address => {
+    if (address !== null) {
+      const re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (re.test(address.toLowerCase())) {
+        console.log(
+          `Valid Email Address ${Math.random() * (10 - 2) + 2} email = ${email}`
+        );
+        onChangeEmail(address.toLowerCase());
+        validatePassword(password);
+      }
+    } else {
+      //TODO -> Toast(Invalid Email)
+      //TODO -> https://github.com/scalessec/Toast-Swift
       console.log(
         `Invalid Email Address ${Math.random() * (10 - 2) + 2} email = ${email}`
       );
-      onChangeEmail(address.toLowerCase());
     }
   };
 
