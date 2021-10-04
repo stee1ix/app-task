@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 	const [appIsReady, setAppIsReady] = useState(false);
-	const [authenticated, setAuthenticated] = useState(true);
+	const [authenticated, setAuthenticated] = useState(false);
 
 	useEffect(() => {
 		async function prepare() {

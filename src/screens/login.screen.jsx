@@ -207,10 +207,12 @@ const Login = ({ navigation }) => {
 						<View style={styles.forgotTextWrapper}>
 							<TouchableOpacity
 								onPress={() =>
-									navigation.navigate('ForgotPassword')
+									login
+										? navigation.navigate('ForgotPassword')
+										: {}
 								}>
 								<MotiText
-									animate={{ opacity: login ? 1 : 0 }}
+									animate={{ scale: login ? 1 : 0 }}
 									style={styles.forgotText}>
 									Forgot?
 								</MotiText>
