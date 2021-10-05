@@ -1,24 +1,59 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import {
+	createBottomTabNavigator,
+	useBottomTabBarHeight,
+} from '@react-navigation/bottom-tabs';
+import { AntDesign } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen/home.screen';
+import { LinearGradient } from 'expo-linear-gradient';
+
 const Tab = createBottomTabNavigator();
 
 function SettingsScreen() {
 	return (
 		<View
-			style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Settings!</Text>
+			style={{
+				flex: 1,
+				justifyContent: 'center',
+				alignItems: 'center',
+				backgroundColor: '#fff',
+			}}>
+			<Image
+				source={require('../../assets/images/minion2.png')}
+				style={{
+					position: 'absolute',
+
+					width: 300,
+					height: 300,
+					resizeMode: 'contain',
+				}}
+			/>
 		</View>
 	);
 }
 
 function ProfileScreen() {
+	const tabHeight = useBottomTabBarHeight();
+
 	return (
 		<View
-			style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Profile!</Text>
+			style={{
+				flex: 1,
+				justifyContent: 'center',
+				alignItems: 'center',
+				backgroundColor: '#fff',
+			}}>
+			<Image
+				source={require('../../assets/images/minion1.png')}
+				style={{
+					position: 'absolute',
+					bottom: tabHeight,
+					width: 300,
+					height: 300,
+					resizeMode: 'contain',
+				}}
+			/>
 		</View>
 	);
 }
@@ -31,24 +66,50 @@ const HomeTab = () => {
 					let iconName;
 
 					if (route.name === 'HomeScreen') {
-						iconName = focused ? 'ios-home' : 'ios-home-outline';
+						iconName = focused ? 'apple1' : 'apple-o';
 					} else if (route.name === 'ProfileScreen') {
-						iconName = focused
-							? 'ios-person'
-							: 'ios-person-outline';
+						iconName = focused ? 'appstore1' : 'appstore-o';
 					} else if (route.name === 'SettingsScreen') {
-						iconName = focused
-							? 'ios-settings'
-							: 'ios-settings-outline';
+						iconName = focused ? 'star' : 'staro';
 					}
 
-					return <Ionicons name={iconName} size={size} />;
+					return (
+						<AntDesign name={iconName} size={size} color={color} />
+					);
 				},
-				// tabBarActiveTintColor: colors.blue,
 				tabBarHideOnKeyboard: true,
 				tabBarShowLabel: false,
 				headerShown: false,
-				// tabBarStyle: styles.tabBarStyle,
+				tabBarStyle: styles.tabBarStyle,
+				tabBarBackground: () => (
+					<LinearGradient
+						colors={['#49E2A2', '#13B8FF']}
+						style={{
+							width: '100%',
+							height: '100%',
+							padding: 2,
+							paddingBottom: 5,
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+						start={{ x: 0, y: 1 }}
+						end={{ x: 1, y: 1 }}>
+						<View
+							style={{
+								backgroundColor: '#fff',
+								width: '100%',
+								height: '100%',
+								borderTopStartRadius: 200,
+								borderBottomStartRadius: 80,
+								borderTopEndRadius: 200,
+								borderBottomEndRadius: 80,
+								marginHorizontal: 10,
+							}}
+						/>
+					</LinearGradient>
+				),
+				tabBarInactiveTintColor: '#13B8FF',
+				tabBarActiveTintColor: '#13B8FF',
 			})}>
 			<Tab.Screen name="HomeScreen" component={HomeScreen} />
 			<Tab.Screen name="ProfileScreen" component={ProfileScreen} />
@@ -58,3 +119,18 @@ const HomeTab = () => {
 };
 
 export default HomeTab;
+
+const styles = StyleSheet.create({
+	tabBarStyle: {
+		position: 'absolute',
+		bottom: 0,
+		height: 60,
+		borderTopStartRadius: 200,
+		borderBottomStartRadius: 80,
+		borderTopEndRadius: 200,
+		borderBottomEndRadius: 80,
+		marginHorizontal: 10,
+		overflow: 'hidden',
+		elevation: 5,
+	},
+});

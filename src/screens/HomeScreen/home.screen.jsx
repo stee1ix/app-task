@@ -1,5 +1,4 @@
 import React, {
-	createRef,
 	forwardRef,
 	useCallback,
 	useEffect,
@@ -13,13 +12,12 @@ import {
 	Dimensions,
 	Image,
 	Animated,
-	FlatList,
-	ScrollView,
 } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Card from './card.component';
 import data from './data';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -28,9 +26,9 @@ const Tab = forwardRef(({ item, onItemPress }, ref) => (
 		<View ref={ref} style={{ margin: 7 }}>
 			<Text
 				style={{
-					fontSize: 15,
+					fontSize: 18,
 					fontFamily: 'Baloo-Regular',
-					color: 'black',
+					color: '#000',
 				}}>
 				{item.date}
 			</Text>
@@ -42,19 +40,19 @@ const Indicator = ({ measures, scrollX }) => {
 	const inputRange = data.map((item, index) => index * width);
 	const indicatorWidth = scrollX.interpolate({
 		inputRange,
-		outputRange: measures.map(measure => measure.width + 12),
+		outputRange: measures.map(measure => measure.width + 24),
 	});
 	const indicatorHeight = scrollX.interpolate({
 		inputRange,
-		outputRange: measures.map(measure => measure.height + 8),
+		outputRange: measures.map(measure => measure.height + 18),
 	});
 	const translateX = scrollX.interpolate({
 		inputRange,
-		outputRange: measures.map(measure => measure.x - 6),
+		outputRange: measures.map(measure => measure.x - 12),
 	});
 	const translateY = scrollX.interpolate({
 		inputRange,
-		outputRange: measures.map(measure => measure.y - 4),
+		outputRange: measures.map(measure => measure.y - 9),
 	});
 
 	return (
@@ -63,8 +61,7 @@ const Indicator = ({ measures, scrollX }) => {
 				position: 'absolute',
 				height: indicatorHeight,
 				width: indicatorWidth,
-				backgroundColor: '#cf40ff',
-				borderRadius: 5,
+				borderRadius: 10,
 				zIndex: 1,
 				transform: [
 					{
@@ -74,8 +71,14 @@ const Indicator = ({ measures, scrollX }) => {
 						translateY,
 					},
 				],
-			}}
-		/>
+			}}>
+			<LinearGradient
+				colors={['#ff7e5f', '#feb47b']}
+				style={{ height: '100%', width: '100%', borderRadius: 10 }}
+				start={{ x: 0, y: 1 }}
+				end={{ x: 1, y: 1 }}
+			/>
+		</Animated.View>
 	);
 };
 
@@ -98,39 +101,21 @@ const Tabs = ({ data, scrollX, onItemPress }) => {
 	}, []);
 
 	return (
-		<SafeAreaView>
-			<View
-				style={{
-					// position: 'absolute',
-					// top: 0,
-					// width: width,
-					// backgroundColor: 'red',
-					flexDirection: 'row',
-				}}>
-				<View
-					ref={containerRef}
-					style={{
-						justifyContent: 'space-evenly',
-						alignItems: 'center',
-						flex: 1,
-						flexDirection: 'row',
-						flexWrap: 'wrap',
-						// backgroundColor: 'red',
-					}}>
-					{data.map((item, index) => (
-						<Tab
-							key={item.key}
-							item={item}
-							ref={item.ref}
-							onItemPress={() => onItemPress(index)}
-						/>
-					))}
-				</View>
-				{measures.length > 0 && (
-					<Indicator measures={measures} scrollX={scrollX} />
-				)}
+		<View style={{ flexDirection: 'row' }}>
+			<View ref={containerRef} style={styles.tabsContainer}>
+				{data.map((item, index) => (
+					<Tab
+						key={item.key}
+						item={item}
+						ref={item.ref}
+						onItemPress={() => onItemPress(index)}
+					/>
+				))}
 			</View>
-		</SafeAreaView>
+			{measures.length > 0 && (
+				<Indicator measures={measures} scrollX={scrollX} />
+			)}
+		</View>
 	);
 };
 
@@ -152,7 +137,7 @@ const Cards = ({ matches }) => {
 				{ useNativeDriver: true }
 			)}
 			showsVerticalScrollIndicator={false}>
-			<View style={{ height: 20 }} />
+			<View style={{ height: 8 }} />
 			{matches.map((match, index) => {
 				const inputRange = [
 					-1,
@@ -186,7 +171,7 @@ const Cards = ({ matches }) => {
 				);
 			})}
 
-			<View style={{ height: 150 }} />
+			<View style={{ height: 400 }} />
 		</Animated.ScrollView>
 	);
 };
@@ -201,28 +186,43 @@ const HomeScreen = () => {
 	});
 
 	return (
-		<View style={styles.container}>
-			<Tabs data={data} scrollX={scrollX} onItemPress={onItemPress} />
-			<Animated.FlatList
-				ref={ref}
-				data={data}
-				keyExtractor={item => item.key.toString()}
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				pagingEnabled
-				onScroll={Animated.event(
-					[{ nativeEvent: { contentOffset: { x: scrollX } } }],
-					{ useNativeDriver: false }
-				)}
-				renderItem={({ item }) => {
-					return (
-						<View
-							style={{
-								width,
-								height,
-								justifyContent: 'center',
-							}}>
-							{/* <Image
+		<SafeAreaView>
+			<View style={styles.container}>
+				<View style={styles.headerContainer}>
+					<Text style={styles.helloText}>Hello, Rituraj</Text>
+					<Image
+						source={require('../../../assets/images/avatar2.jpg')}
+						style={styles.avatar}
+					/>
+				</View>
+				<Animated.View style={styles.tabsWrapper}>
+					<Tabs
+						data={data}
+						scrollX={scrollX}
+						onItemPress={onItemPress}
+					/>
+				</Animated.View>
+				<View style={{ height: 20 }} />
+				<Animated.FlatList
+					ref={ref}
+					data={data}
+					keyExtractor={item => item.key.toString()}
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					pagingEnabled
+					onScroll={Animated.event(
+						[{ nativeEvent: { contentOffset: { x: scrollX } } }],
+						{ useNativeDriver: false }
+					)}
+					renderItem={({ item }) => {
+						return (
+							<View
+								style={{
+									width,
+									height,
+									justifyContent: 'center',
+								}}>
+								{/* <Image
 								source={{ uri: item.image }}
 								style={{
 									flex: 1,
@@ -231,12 +231,13 @@ const HomeScreen = () => {
 								}}
 							/> */}
 
-							<Cards matches={item.matches} />
-						</View>
-					);
-				}}
-			/>
-		</View>
+								<Cards matches={item.matches} />
+							</View>
+						);
+					}}
+				/>
+			</View>
+		</SafeAreaView>
 	);
 };
 
@@ -245,5 +246,34 @@ export default HomeScreen;
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#fff',
+	},
+	headerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginHorizontal: 20,
+		paddingTop: 30,
+		paddingBottom: 30,
+		// backgroundColor: 'orange',
+	},
+	helloText: {
+		alignSelf: 'flex-end',
+		// backgroundColor: 'grey',
+		fontFamily: 'Baloo-Medium',
+		fontSize: 30,
+	},
+	avatar: {
+		width: 50,
+		height: 50,
+		borderRadius: 10,
+		resizeMode: 'cover',
+	},
+	tabsWrapper: {},
+	tabsContainer: {
+		justifyContent: 'space-evenly',
+		alignItems: 'center',
+		flex: 1,
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		// backgroundColor: 'red',
 	},
 });

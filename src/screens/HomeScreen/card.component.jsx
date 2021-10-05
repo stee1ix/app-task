@@ -1,17 +1,9 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View, Image } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 const Card = ({ team1, team2, logo1, logo2, time = '8:00am' }) => {
 	return (
 		<View style={styles.container}>
-			{/* <View style={styles.headerWrapper}>
-				<Text style={styles.teamName}>{team1}</Text>
-				<Text style={styles.time}>{time}</Text>
-				<Text style={styles.teamName}>{team2}</Text>
-			</View> */}
-
 			<View style={styles.teamWrapper1}>
 				<Text style={styles.teamName}>{team1}</Text>
 				<Image source={{ uri: logo1 }} style={styles.logo} />
@@ -24,12 +16,6 @@ const Card = ({ team1, team2, logo1, logo2, time = '8:00am' }) => {
 				<Text style={styles.teamName}>{team2}</Text>
 				<Image source={{ uri: logo2 }} style={styles.logo} />
 			</View>
-
-			{/* <View style={styles.imagesWrapper}>
-				<Image source={{ uri: logo1 }} style={styles.logo} />
-				<Text style={{ fontFamily: 'Baloo-Medium' }}>VS</Text>
-				<Image source={{ uri: logo2 }} style={styles.logo} />
-			</View> */}
 		</View>
 	);
 };
@@ -49,16 +35,9 @@ const styles = StyleSheet.create({
 		marginHorizontal: 20,
 		paddingVertical: 10,
 	},
-	// headerWrapper: {
-	// 	backgroundColor: 'orange',
-	// 	justifyContent: 'space-between',
-	// 	flexDirection: 'row',
-	// 	width: '100%',
-	// },
 	teamName: {
 		fontFamily: 'Baloo-Medium',
 		fontSize: 16,
-		// marginBottom: 10,
 	},
 
 	teamWrapper1: {
@@ -86,15 +65,6 @@ const styles = StyleSheet.create({
 		marginBottom: 45,
 		fontFamily: 'Baloo-Regular',
 	},
-	// imagesWrapper: {
-	// 	flex: 1,
-	// 	width: '100%',
-	// 	// backgroundColor: 'green',
-	// 	flexDirection: 'row',
-	// 	justifyContent: 'space-between',
-	// 	paddingHorizontal: 30,
-	// 	alignItems: 'center',
-	// },
 	logo: {
 		width: 70,
 		height: 70,
