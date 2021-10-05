@@ -87,7 +87,7 @@ const HomeTab = () => {
 						style={{
 							width: '100%',
 							height: '100%',
-							padding: 2,
+							padding: 3,
 							paddingBottom: 5,
 							justifyContent: 'center',
 							alignItems: 'center',
@@ -103,7 +103,6 @@ const HomeTab = () => {
 								borderBottomStartRadius: 80,
 								borderTopEndRadius: 200,
 								borderBottomEndRadius: 80,
-								marginHorizontal: 10,
 							}}
 						/>
 					</LinearGradient>
