@@ -2,17 +2,8 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
+import HomeScreen from '../screens/HomeScreen/home.screen';
 const Tab = createBottomTabNavigator();
-
-function HomeStack() {
-	return (
-		<View
-			style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Home!</Text>
-		</View>
-	);
-}
 
 function SettingsScreen() {
 	return (
@@ -39,7 +30,7 @@ const HomeTab = () => {
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
 
-					if (route.name === 'HomeStack') {
+					if (route.name === 'HomeScreen') {
 						iconName = focused ? 'ios-home' : 'ios-home-outline';
 					} else if (route.name === 'ProfileScreen') {
 						iconName = focused
@@ -59,7 +50,7 @@ const HomeTab = () => {
 				headerShown: false,
 				// tabBarStyle: styles.tabBarStyle,
 			})}>
-			<Tab.Screen name="HomeStack" component={HomeStack} />
+			<Tab.Screen name="HomeScreen" component={HomeScreen} />
 			<Tab.Screen name="ProfileScreen" component={ProfileScreen} />
 			<Tab.Screen name="SettingsScreen" component={SettingsScreen} />
 		</Tab.Navigator>
