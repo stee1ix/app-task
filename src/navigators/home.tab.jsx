@@ -7,6 +7,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen/home.screen';
 import { LinearGradient } from 'expo-linear-gradient';
+import HomeStack from './home.stack';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,7 +66,7 @@ const HomeTab = () => {
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
 
-					if (route.name === 'HomeScreen') {
+					if (route.name === 'HomeStack') {
 						iconName = focused ? 'apple1' : 'apple-o';
 					} else if (route.name === 'ProfileScreen') {
 						iconName = focused ? 'appstore1' : 'appstore-o';
@@ -110,7 +111,7 @@ const HomeTab = () => {
 				tabBarInactiveTintColor: '#13B8FF',
 				tabBarActiveTintColor: '#13B8FF',
 			})}>
-			<Tab.Screen name="HomeScreen" component={HomeScreen} />
+			<Tab.Screen name="HomeStack" component={HomeStack} />
 			<Tab.Screen name="ProfileScreen" component={ProfileScreen} />
 			<Tab.Screen name="SettingsScreen" component={SettingsScreen} />
 		</Tab.Navigator>
