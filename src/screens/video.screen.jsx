@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -29,6 +29,30 @@ const VideoScreen = ({ navigation }) => {
 			?.getDuration()
 			.then(getDuration => playerRef.current.seekTo(getDuration));
 	};
+
+	useEffect(() => {
+		navigation.getParent().setOptions({
+			tabBarStyle: {
+				display: 'none',
+			},
+		});
+		return () => {
+			navigation.getParent().setOptions({
+				tabBarStyle: {
+					position: 'absolute',
+					bottom: 0,
+					height: 60,
+					borderTopStartRadius: 200,
+					borderBottomStartRadius: 80,
+					borderTopEndRadius: 200,
+					borderBottomEndRadius: 80,
+					marginHorizontal: 10,
+					overflow: 'hidden',
+					elevation: 5,
+				},
+			});
+		};
+	}, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -103,7 +127,7 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		flexDirection: 'row',
-		padding: 20,
+		padding: 10,
 		justifyContent: 'space-between',
 	},
 	videoContainer: {},
@@ -112,5 +136,3 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 });
-
-//style={{ marginBottom: -57 }}
