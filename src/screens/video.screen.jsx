@@ -1,11 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+	StyleSheet,
+	TouchableOpacity,
+	View,
+	Text,
+	Dimensions,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import WebView from 'react-native-webview';
 import { MotiView } from '@motify/components';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import LottieView from 'lottie-react-native';
 
 const VideoScreen = ({ navigation }) => {
 	const tabBarHeight = useBottomTabBarHeight();
@@ -13,6 +20,7 @@ const VideoScreen = ({ navigation }) => {
 	const playerRef = useRef();
 
 	const [playing, setPlaying] = useState(true);
+	const [playerReady, setPlayerReady] = useState(false);
 
 	const onStateChange = useCallback(state => {
 		if (state === 'ended') {
@@ -64,7 +72,9 @@ const VideoScreen = ({ navigation }) => {
 				</TouchableOpacity>
 				<MotiView
 					style={{ flexDirection: 'row' }}
-					animate={{ translateX: !playing ? 47 : 0 }}>
+					animate={{
+						translateX: !playing ? 47 : !playerReady ? 90 : 0,
+					}}>
 					<MotiView>
 						<TouchableOpacity
 							onPress={togglePlaying}
@@ -90,29 +100,53 @@ const VideoScreen = ({ navigation }) => {
 					</MotiView>
 				</MotiView>
 			</View>
-			<View pointerEvents="none">
-				<YoutubePlayer
-					ref={playerRef}
-					play={playing}
-					videoId={'mg7FweYjasE'}
-					onChangeState={onStateChange}
-					height={200}
-					initialPlayerParams={{
-						showClosedCaptions: false,
-						controls: false,
-						modestbranding: 0,
-					}}
+			<MotiView
+				animate={{ opacity: playerReady ? 0 : 1 }}
+				style={{
+					position: 'absolute',
+					top: 200,
+					left: 0,
+					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'center',
+					backgroundColor: '#fff',
+					width: Dimensions.get('window').width,
+				}}>
+				<LottieView
+					style={styles.videoLottie}
+					source={require('../../assets/videoLoadAnimation.json')}
+					autoPlay
 				/>
-			</View>
+				<Text style={{ fontFamily: 'Baloo-Medium', fontSize: 25 }}>
+					Loading...
+				</Text>
+			</MotiView>
+			<MotiView
+				animate={{ opacity: !playerReady ? 0 : 1 }}
+				style={{ flex: 1 }}>
+				<View pointerEvents="none">
+					<YoutubePlayer
+						ref={playerRef}
+						play={playing}
+						videoId={'rDEcVPCoYIA'}
+						onChangeState={onStateChange}
+						onReady={() => setPlayerReady(prev => !prev)}
+						height={200}
+						initialPlayerParams={{
+							controls: false,
+						}}
+					/>
+				</View>
 
-			<View style={styles.webView}>
-				<WebView
-					source={{
-						uri: 'https://www.youtube.com/live_chat?v=86YLFOog4GM',
-					}}
-					scalesPageToFit={false}
-				/>
-			</View>
+				<View style={styles.webView}>
+					<WebView
+						source={{
+							uri: 'https://www.youtube.com/live_chat?v=86YLFOog4GM',
+						}}
+						scalesPageToFit={false}
+					/>
+				</View>
+			</MotiView>
 			<View style={{ height: tabBarHeight }} />
 		</SafeAreaView>
 	);
@@ -134,5 +168,10 @@ const styles = StyleSheet.create({
 	backArrow: {},
 	webView: {
 		flex: 1,
+	},
+	videoLottie: {
+		height: 200,
+		width: 200,
+		marginBottom: 30,
 	},
 });
