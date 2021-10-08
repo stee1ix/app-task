@@ -31,7 +31,9 @@
     "react-native-youtube-iframe": "^2.1.2",
     "react-redux": "^7.2.5",
     "redux": "^4.1.1",
-    "redux-logger": "^3.0.6"
+    "redux-logger": "^3.0.6",
+    "expo-av": "~9.2.3",
+    "firebase": "8.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

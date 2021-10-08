@@ -12,12 +12,16 @@ import {
 	Dimensions,
 	Image,
 	Animated,
+	TouchableOpacity,
 } from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
+import { Menu, TouchableRipple } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Card from './card.component';
 import data from './data';
 import { LinearGradient } from 'expo-linear-gradient';
+import { auth } from '../../firebase/firebase.util';
+import { connect } from 'react-redux';
+import { toggleAuth } from '../../redux/user/user.actions';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -176,7 +180,7 @@ const Cards = ({ matches }) => {
 	);
 };
 
-const HomeScreen = () => {
+const HomeScreen = ({ toggleAuth, username }) => {
 	const scrollX = useRef(new Animated.Value(0)).current;
 	const ref = useRef();
 	const onItemPress = useCallback(itemIndex => {
@@ -185,15 +189,40 @@ const HomeScreen = () => {
 		});
 	});
 
+	const signOut = async () => {
+		await auth.signOut();
+		toggleAuth();
+	};
+
+	const [visible, setVisible] = useState(false);
+
+	const openMenu = () => setVisible(true);
+
+	const closeMenu = () => setVisible(false);
+
 	return (
 		<SafeAreaView>
 			<View style={styles.container}>
 				<View style={styles.headerContainer}>
-					<Text style={styles.helloText}>Hello, Rituraj</Text>
-					<Image
-						source={require('../../../assets/images/avatar2.jpg')}
-						style={styles.avatar}
-					/>
+					<Text style={styles.helloText}>{`Hello, ${username}`}</Text>
+					<TouchableOpacity onPress={openMenu}>
+						<Menu
+							visible={visible}
+							onDismiss={closeMenu}
+							anchor={
+								<Image
+									source={require('../../../assets/images/avatar2.jpg')}
+									style={styles.avatar}
+								/>
+							}>
+							<Menu.Item
+								onPress={() => {
+									signOut();
+								}}
+								title="Sign out"
+							/>
+						</Menu>
+					</TouchableOpacity>
 				</View>
 				<Animated.View style={styles.tabsWrapper}>
 					<Tabs
@@ -241,7 +270,15 @@ const HomeScreen = () => {
 	);
 };
 
-export default HomeScreen;
+const mapDispatchToProps = dispatch => ({
+	toggleAuth: () => dispatch(toggleAuth()),
+});
+
+const mapStateToProps = state => ({
+	username: state.user.username,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
 	container: {

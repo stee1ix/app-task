@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -11,17 +11,27 @@ import {
 	TouchableWithoutFeedback,
 	TouchableOpacity,
 	Image,
+	ToastAndroid,
 } from 'react-native';
 import { FAB, Divider, TouchableRipple } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { MotiView, MotiText, AnimatePresence } from 'moti';
+import { setUsername, toggleAuth } from '../redux/user/user.actions';
+import { connect } from 'react-redux';
+import {
+	addDataToFirestore,
+	auth,
+	signInWithGoogle,
+} from '../firebase/firebase.util';
+import data from './HomeScreen/data';
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, toggleAuth, setDisplayName }) => {
 	const [username, onChangeUsername] = useState(null);
 	const [password, onChangePassword] = useState(null);
 	const [email, onChangeEmail] = useState(null);
 	const [login, setLogin] = useState(true);
 	const [hidePassword, setHidePassword] = useState(true);
+	const [fabLoading, setFabLoading] = useState(false);
 
 	// toggles login value
 	async function toggleLogin() {
@@ -39,6 +49,10 @@ const Login = ({ navigation }) => {
 		} else {
 			//TODO -> Toast(Password Length Must be atleast 6 characters long)
 			//TODO -> https://github.com/scalessec/Toast-Swift
+			ToastAndroid.show(
+				'Password length must be 6 characters !',
+				ToastAndroid.SHORT
+			);
 			console.log('Password length must be 6 characters');
 		}
 	};
@@ -57,7 +71,10 @@ const Login = ({ navigation }) => {
 				validatePassword(password);
 			}
 		} else {
-			//TODO -> Toast(Invalid Email)
+			ToastAndroid.show(
+				'Invalid Email Address Format !',
+				ToastAndroid.SHORT
+			);
 			//TODO -> https://github.com/scalessec/Toast-Swift
 			console.log(
 				`Invalid Email Address ${
@@ -65,7 +82,66 @@ const Login = ({ navigation }) => {
 				} email = ${email}`
 			);
 		}
+		null;
 	};
+
+	const registerSubmit = async () => {
+		try {
+			// await validateEmail(email);
+			await validatePassword(password);
+			setFabLoading(true);
+			const { user } = await auth.createUserWithEmailAndPassword(
+				email,
+				password
+			);
+
+			await user.updateProfile({ displayName: username });
+
+			setDisplayName(username);
+
+			// await createUserProfileDocument(user, { username });
+
+			// this.setState({
+			// 	displayName: '',
+			// 	email: '',
+			// 	password: '',
+			// 	confirmPassword: '',
+			// });
+			toggleAuth();
+		} catch (error) {
+			setFabLoading(false);
+			console.error(error);
+		}
+	};
+
+	const loginSubmit = async () => {
+		// await validateEmail(email);
+		await validatePassword(password);
+		try {
+			setFabLoading(true);
+			await auth.signInWithEmailAndPassword(email, password);
+			// this.setState({ email: '', password: '' });
+			const name = auth.currentUser.displayName;
+			setDisplayName(name);
+
+			toggleAuth();
+		} catch (error) {
+			setFabLoading(false);
+			// ToastAndroid.show('User does not exist !', ToastAndroid.SHORT);
+			console.log(error);
+		}
+	};
+
+	const googleAuth = async () => {
+		await signInWithGoogle();
+	};
+
+	// useEffect(() => {
+	// 	addDataToFirestore(
+	// 		'data',
+	// 		data.map(({ key, date, matches }) => ({ key, date, matches }))
+	// 	);
+	// }, []);
 
 	return (
 		<View style={styles.container}>
@@ -113,10 +189,38 @@ const Login = ({ navigation }) => {
 						<MotiView
 							animate={{ height: !login ? 210 : 140 }}
 							style={styles.inputsHolder}>
-							{/* Username input */}
+							{/* Email input */}
 							<MotiView
 								animate={{ translateY: login ? 35 : 0 }}
 								style={styles.inputWrapper}>
+								<Ionicons
+									name="mail-outline"
+									size={20}
+									color="grey"
+								/>
+								<TextInput
+									style={styles.input}
+									placeholder="Email"
+									onChangeText={onChangeEmail}
+									value={email}
+									textContentType="emailAddress"
+									autoCompleteType="email"
+								/>
+							</MotiView>
+
+							{/* Divider */}
+							<MotiView animate={{ translateY: login ? 35 : 0 }}>
+								<Divider />
+							</MotiView>
+
+							{/* Username input */}
+							<MotiView
+								animate={{
+									translateX: login
+										? -Dimensions.get('screen').width - 40
+										: 0,
+								}}
+								style={styles.inputWrapperEmail}>
 								<Ionicons
 									name="ios-person-outline"
 									size={20}
@@ -127,34 +231,6 @@ const Login = ({ navigation }) => {
 									placeholder="Username"
 									onChangeText={onChangeUsername}
 									value={username}
-								/>
-							</MotiView>
-
-							{/* Divider */}
-							<MotiView animate={{ translateY: login ? 35 : 0 }}>
-								<Divider />
-							</MotiView>
-
-							{/* Email input */}
-							<MotiView
-								animate={{
-									translateX: login
-										? -Dimensions.get('screen').width - 40
-										: 0,
-								}}
-								style={styles.inputWrapperEmail}>
-								<Ionicons
-									name="mail-outline"
-									size={20}
-									color="grey"
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder="Email"
-									autoCompleteType="email"
-									onChangeText={onChangeEmail}
-									value={email}
-									textContentType="emailAddress"
 								/>
 							</MotiView>
 
@@ -196,10 +272,17 @@ const Login = ({ navigation }) => {
 							{/* Submit Button */}
 							<FAB
 								style={styles.fab}
-								icon="arrow-right"
-								loading={false}
+								icon={login ? 'arrow-right' : 'check'}
+								loading={fabLoading}
 								color="#fff"
-								onPress={() => validateEmail(email)}
+								onPress={() => {
+									// validateEmail(email);
+									if (login) {
+										loginSubmit();
+									} else {
+										registerSubmit();
+									}
+								}}
 							/>
 						</MotiView>
 
@@ -224,7 +307,8 @@ const Login = ({ navigation }) => {
 							<TouchableRipple
 								borderless
 								style={styles.googleOption}
-								onPress={() => null}>
+								// onPress={() => googleAuth()}
+							>
 								<Image
 									source={require('../../assets/images/google.png')}
 									style={styles.googleLogo}
@@ -250,12 +334,16 @@ const Login = ({ navigation }) => {
 	);
 };
 
-export default Login;
+const mapDispatchToProps = dispatch => ({
+	toggleAuth: () => dispatch(toggleAuth()),
+	setDisplayName: username => dispatch(setUsername(username)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// backgroundColor: '#fff',
 		justifyContent: 'center',
 	},
 	backgroundImage: {

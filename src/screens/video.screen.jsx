@@ -11,22 +11,27 @@ import { Feather } from '@expo/vector-icons';
 import WebView from 'react-native-webview';
 import { MotiView } from '@motify/components';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import LottieView from 'lottie-react-native';
+import { Video, AVPlaybackStatus } from 'expo-av';
 
 const VideoScreen = ({ navigation }) => {
 	const tabBarHeight = useBottomTabBarHeight();
 
 	const playerRef = useRef();
 
+	const uri = 'https://www.youtube.com/watch?v=Uvb4X56ezd8';
+
+	const video = React.useRef(null);
+	const [status, setStatus] = React.useState({});
+
 	const [playing, setPlaying] = useState(true);
 	const [playerReady, setPlayerReady] = useState(false);
 
-	const onStateChange = useCallback(state => {
-		if (state === 'ended') {
-			setPlaying(false);
-		}
-	}, []);
+	// const onStateChange = useCallback(state => {
+	// 	if (state === 'ended') {
+	// 		setPlaying(false);
+	// 	}
+	// }, []);
 
 	const togglePlaying = useCallback(() => {
 		setPlaying(prev => !prev);
@@ -44,6 +49,9 @@ const VideoScreen = ({ navigation }) => {
 				display: 'none',
 			},
 		});
+
+		const timer = setTimeout(() => setPlayerReady(true), 6000);
+
 		return () => {
 			navigation.getParent().setOptions({
 				tabBarStyle: {
@@ -59,6 +67,8 @@ const VideoScreen = ({ navigation }) => {
 					elevation: 5,
 				},
 			});
+
+			clearTimeout(timer);
 		};
 	}, []);
 
@@ -70,7 +80,7 @@ const VideoScreen = ({ navigation }) => {
 					style={styles.backArrow}>
 					<Feather name="arrow-left" color="#000" size={30} />
 				</TouchableOpacity>
-				<MotiView
+				{/* <MotiView
 					style={{ flexDirection: 'row' }}
 					animate={{
 						translateX: !playing ? 47 : !playerReady ? 90 : 0,
@@ -98,7 +108,7 @@ const VideoScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					</MotiView>
-				</MotiView>
+				</MotiView> */}
 			</View>
 			<MotiView
 				animate={{ opacity: playerReady ? 0 : 1 }}
@@ -124,19 +134,22 @@ const VideoScreen = ({ navigation }) => {
 			<MotiView
 				animate={{ opacity: !playerReady ? 0 : 1 }}
 				style={{ flex: 1 }}>
-				<View pointerEvents="none">
-					<YoutubePlayer
-						ref={playerRef}
-						play={playing}
-						videoId={'rDEcVPCoYIA'}
-						onChangeState={onStateChange}
-						onReady={() => setPlayerReady(prev => !prev)}
-						height={200}
-						initialPlayerParams={{
-							controls: false,
-						}}
-					/>
-				</View>
+				<Video
+					ref={video}
+					style={{
+						height: 245,
+						width: '100%',
+					}}
+					source={{
+						uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+						// uri: 'https://www.youtube.com/watch?v=rDEcVPCoYIA',
+						// uri: 'rtmp://a.rtmp.youtube.com/live2/rDEcVPCoYIA',
+						// type: 'm3u8',
+					}}
+					useNativeControls
+					resizeMode="contain"
+					onPlaybackStatusUpdate={status => setStatus(() => status)}
+				/>
 
 				<View style={styles.webView}>
 					<WebView
